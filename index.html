@@ -6,17 +6,31 @@
 
     <script
       type="text/javascript"
-      src="http://www.bing.com/api/maps/mapcontrol?callback=LoadMap&key=AsnjENk9o2btta0rJzurVwsuleYaFxsWcc78p0Bop4TjK4M7PdNcjX1JyCXi6C45"
+      src="http://www.bing.com/api/maps/mapcontrol?callback=GetMap"
       async
       defer
     ></script>
     <script type="text/javascript" src="js/main.js"></script>
   </head>
 
+  <!-- Autosuggest UI -->
+  <div id="searchBoxContainer">
+    <label for="searchBox"> Search:</label>
+    <input type="text" id="searchBox" />
+  </div>
+  <!-- End Autosuggest UI -->
+
+  <!-- POI query UI -->
+  <div id="PoiQueryContainer">
+    <!-- <label for="poiquery"> Search:</label> -->
+    <button type="button" id="poibutton">Click Me for Gas Stations!</button>
+  </div>
+  <!-- End POI query -->
+
   <body>
     <div
       id="myMap"
-      style="position: relative; width: 600px; height: 600px"
+      style="position: relative; width: 600px; height: 400px"
     ></div>
   </body>
 </html>
