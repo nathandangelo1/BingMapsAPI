@@ -43,10 +43,6 @@ button {
 
 #myMap {
   margin: auto;
-  position: center;
-  /* width: calc(100% - 380px);
-  height: 100%; */
-  padding:300px;
   width: 800px;
   height: 600px;
 }
