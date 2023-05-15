@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
     <title>Map Test</title>
     <meta charset="utf-8" />
@@ -13,24 +13,31 @@
     <script type="text/javascript" src="js/main.js"></script>
   </head>
 
-  <!-- Autosuggest UI -->
-  <div id="searchBoxContainer">
-    <label for="searchBox"> Search:</label>
-    <input type="text" id="searchBox" />
-  </div>
-  <!-- End Autosuggest UI -->
-
-  <!-- POI query UI -->
-  <div id="PoiQueryContainer">
-    <!-- <label for="poiquery"> Search:</label> -->
-    <button type="button" id="poibutton">Click Me for Gas Stations!</button>
-  </div>
-  <!-- End POI query -->
-
   <body>
-    <div
-      id="myMap"
-      style="position: relative; width: 600px; height: 400px"
-    ></div>
+    <!-- Autosuggest UI -->
+    <div id="searchBoxContainer">
+      <label for="searchBox"> Search:</label>
+      <input type="text" id="searchBox" />
+    </div>
+    <!-- End Autosuggest UI -->
+
+    <!-- POI query UI -->
+    <div id="sidebar">
+      <!-- <label for="poiquery"> Search:</label> -->
+      <button id="btnrestaurants" type="button">Restaurants</button>
+      <button id="btnhotels" type="button">Hotels</button>
+      <button id="btnbars" type="button">Bars</button>
+      <button id="btnmusicvenu" type="button">Music Venue</button>
+    </div>
+    <!-- End POI query -->
+
+    <!-- directions -->
+    <div class="directionsContainer">
+      <div id="directionsPanel"></div>
+      <div id="directionsItinerary"></div>
+    </div>
+    <!-- directions -->
+
+    <div id="myMap" class="center" style="width: 600px; height: 400px"></div>
   </body>
 </html>

@@ -1,0 +1,52 @@
+﻿body {
+  margin: 20% ;
+   padding: 0; 
+ 
+  display: grid;
+  place-items: center;
+  background-color: #f4f1e0;
+  height: 100vh;
+
+}
+.center {
+  width: 50%;
+  margin: auto;
+}
+button {
+  display: inline-block;
+  text-align: center;
+}
+
+#sidebar {
+  border: groove;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  display: grid;
+  grid-template-columns: 100px 100px;
+  grid-template-rows: 40px 40px;
+  background-color: white;
+}
+
+.map-border {
+  border: groove;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.directionsContainer {
+    
+    width: 380px;
+    height: 100%;
+    overflow-y: auto;
+    float: left;
+}
+
+#myMap {
+  margin: auto;
+  position: center;
+  /* width: calc(100% - 380px);
+  height: 100%; */
+  padding:300px;
+  width: 800px;
+  height: 600px;
+}
