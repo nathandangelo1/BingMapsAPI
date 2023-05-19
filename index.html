@@ -3,6 +3,7 @@
   <head>
     <title>Map Test</title>
     <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
 
     <script
       type="text/javascript"
@@ -10,34 +11,58 @@
       async
       defer
     ></script>
+
     <script type="text/javascript" src="js/main.js"></script>
   </head>
 
   <body>
-    <!-- Autosuggest UI -->
-    <div id="searchBoxContainer">
-      <label for="searchBox"> Search:</label>
-      <input type="text" id="searchBox" />
-    </div>
-    <!-- End Autosuggest UI -->
-
     <!-- POI query UI -->
-    <div id="sidebar">
-      <!-- <label for="poiquery"> Search:</label> -->
-      <button id="btnrestaurants" type="button">Restaurants</button>
-      <button id="btnhotels" type="button">Hotels</button>
-      <button id="btnbars" type="button">Bars</button>
-      <button id="btnmusicvenu" type="button">Music Venue</button>
+    <div id="topbar">
+      <!-- Autosuggest UI -->
+      <div id="searchBoxContainer">
+        <label for="searchBox"> Search:</label>
+        <input type="text" id="searchBox" />
+      </div>
+      <!-- End Autosuggest UI -->
+      <!-- <label for="searchTbx">Search2:</label>
+      <input id="searchTbx" type="text" /> -->
+      <input id="fetchLocal" type="button" value="Search" />
+      <br />
+      <div id="output" style="margin-left: 10px; float: left"></div>
+
+      <div id="button-container">
+        <button
+          id="btnRestaurants"
+          class="btnnearby"
+          type="button"
+          value="5800"
+        >
+          Restaurants
+        </button>
+        <button id="btnHotels" class="btnnearby" type="button" value="7011">
+          Hotels
+        </button>
+        <button id="btnBars" class="btnnearby" type="button" value="5813">
+          Nightlife
+        </button>
+      </div>
     </div>
+    <!-- <div id="get-directions-container">
+      <button id="btn-getdirections" type="button">Get Directions</button>
+    </div> -->
     <!-- End POI query -->
 
-    <!-- directions -->
-    <div class="directionsContainer">
-      <div id="directionsPanel"></div>
-      <div id="directionsItinerary"></div>
-    </div>
-    <!-- directions -->
+    <div id="view-container">
+      <!-- directions -->
+      <div class="directionsContainer">
+        <div id="directionsPanel"></div>
+        <div id="directionsItinerary"></div>
+      </div>
 
-    <div id="myMap" class="center" style="width: 600px; height: 400px"></div>
+      <!-- directions -->
+      <div id="map-container">
+        <div id="myMap"></div>
+      </div>
+    </div>
   </body>
 </html>
