@@ -52,16 +52,29 @@
     </div> -->
     <!-- End POI query -->
 
-    <div id="view-container">
-      <!-- directions -->
-      <div class="directionsContainer">
-        <div id="directionsPanel"></div>
-        <div id="directionsItinerary"></div>
+    <div id="main">
+      <div id="view-container">
+        <!-- directions -->
+        <div class="directionsContainer">
+          <div id="directionsPanel"></div>
+          <div id="directionsItinerary"></div>
+        </div>
+
+        <!-- directions -->
+        <div id="map-container">
+          <div id="myMap"></div>
+        </div>
       </div>
 
-      <!-- directions -->
-      <div id="map-container">
-        <div id="myMap"></div>
+      <div id="mySidenav" class="sidenav" style="margin-top: 10px">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"
+          >&times;</a
+        >
+        <input type="button" value="<" onclick="pageBackwards();" />
+        <input type="button" value=">" onclick="pageForward();" /><br /><br />
+        <div id="pageInfo"></div>
+        <br />
+        <div id="resultList"></div>
       </div>
     </div>
   </body>
