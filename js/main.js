@@ -61,10 +61,17 @@ function GetMap() {
       NearbyLocations(buttonValue);
     });
   }
+  document
+    .getElementById("pageForwardButton")
+    .addEventListener("click", pageForward);
+  document
+    .getElementById("pageBackwardButton")
+    .addEventListener("click", pageBackwards);
 }
 
 function NearbyLocations(value) {
-  //map.layers.clear();
+  map.layers.clear();
+
   //Create an infobox to display content for each result.
   infobox = new Microsoft.Maps.Infobox(map.getCenter(), { visible: false });
   infobox.setMap(map);
@@ -141,7 +148,7 @@ function Search(res) {
   r = res.resourceSets[0].resources;
   //Remove any previous results from the map.
   map.entities.clear();
-  map.layers.clear();
+  //map.layers.clear();
 
   if (r && r.length > 0) {
     var pin,
@@ -152,7 +159,7 @@ function Search(res) {
     for (var i = 0; i < r.length; i++) {
       let coords = r[i].point.coordinates;
       if (coords[0] !== "undefined" || coords[1] !== "undefined") {
-        const point = new Microsoft.Maps.Point(coords[0], coords[1]);
+        //const point = new Microsoft.Maps.Point();
         var location = new Microsoft.Maps.Location(coords[0], coords[1]);
         //Create a pushpin for each result.
         pin = new Microsoft.Maps.Pushpin(location, {
@@ -161,7 +168,7 @@ function Search(res) {
           text: i + 1 + "",
         });
         pins.push(pin);
-        locs.push(r[i].point.coordinates);
+        locs.push(location);
 
         output += i + 1 + ") " + r[i].name + "<br/>";
       }
@@ -171,7 +178,8 @@ function Search(res) {
     map.entities.push(pins);
 
     //Display list of results
-    document.getElementById("directionsItinerary").innerHTML = output;
+    document.getElementById("resultList").innerHTML = output;
+    openNav();
 
     //Determine a bounding box to best view the results.
     var bounds;
@@ -188,6 +196,8 @@ function Search(res) {
 }
 
 function GetDirections() {
+  closeNav();
+  layer.clear();
   //Load the directions module.
   Microsoft.Maps.loadModule("Microsoft.Maps.Directions", function () {
     if (typeof directionsManager === "undefined") {
@@ -230,7 +240,8 @@ function GetDirections() {
 
 function getNearByLocations(value) {
   //Remove any existing data from the layer.
-  layer.clear();
+  //layer.clear();
+  //map.entities.clear();
 
   //Hide infobox.
   infobox.setOptions({ visible: false });
