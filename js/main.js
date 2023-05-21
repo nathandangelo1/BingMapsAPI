@@ -71,7 +71,9 @@ function GetMap() {
 
 function NearbyLocations(value) {
   map.layers.clear();
-
+  if (typeof Microsoft.Maps.Directions !== "undefined") {
+    directionsManager.clearDisplay();
+  }
   //Create an infobox to display content for each result.
   infobox = new Microsoft.Maps.Infobox(map.getCenter(), { visible: false });
   infobox.setMap(map);
@@ -148,7 +150,11 @@ function Search(res) {
   r = res.resourceSets[0].resources;
   //Remove any previous results from the map.
   map.entities.clear();
+  layer.clear();
   //map.layers.clear();
+  if (typeof Microsoft.Maps.Directions !== "undefined") {
+    directionsManager.clearDisplay();
+  }
 
   if (r && r.length > 0) {
     var pin,
@@ -175,7 +181,7 @@ function Search(res) {
     }
 
     //Add the pins to the map
-    map.entities.push(pins);
+    layer.push(pins);
 
     //Display list of results
     document.getElementById("resultList").innerHTML = output;
