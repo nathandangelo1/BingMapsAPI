@@ -12,15 +12,103 @@ var layer,
 var sdsDataSourceUrl =
   "https://spatial.virtualearth.net/REST/v1/data/Microsoft/PointsOfInterest";
 
-navigator.geolocation.getCurrentPosition(function (position) {
+//begin test
+getLocation();
+
+function getLocation() {
+  navigator.geolocation.getCurrentPosition(handleSuccess, handleError);
+}
+
+function initiate_watchlocation() {
+  if (watchProcess == null) {
+    watchProcess = navigator.geolocation.watchPosition(
+      handleSuccess,
+      handleError
+    );
+  }
+}
+
+function stop_watchlocation() {
+  if (watchProcess != null) {
+    navigator.geolocation.clearWatch(watchProcess);
+  }
+}
+
+function handleSuccess(position) {
   lat = position.coords.latitude;
   lon = position.coords.longitude;
-});
+  GetMap(position);
+}
 
-function GetMap() {
+function handleError(error) {
+  switch (error.code) {
+    case error.PERMISSION_DENIED:
+      alert("User did not share geolocation data");
+      break;
+    case error.POSITION_UNAVAILABLE:
+      alert("Could not detect current position");
+      break;
+    case error.TIMEOUT:
+      alert("Retrieving position timed out");
+      break;
+    default:
+      alert("Unknown Error");
+      break;
+  }
+}
+
+// function drawMap(position) {
+//   var container = $('#map_canvas');
+//   var myLatLong = new Microsoft.Maps.Location(position.coords.latitude,position.coords.longitude);
+//   var mapOptions = {
+//     center: myLatLong,
+//     zoom: 12,
+//     mapTypeId: google.maps.MapTypeId.ROADMAP
+//   };
+//   var map = new google.maps.Map(container[0],mapOptions);
+//   container.css('display','block');
+//   var marker = new google.maps.Marker({
+//     position: myLatLong,
+//     map:map,
+//     title:"My Position (Accuracy of Position: " + position.coords.accuracy + " Meters), Altitude: "
+//       + position.coords.altitude + ' Altitude Accuracy: ' + position.coords.altitudeAccuracy
+//   });
+// }
+
+// function drawStaticMap(position) {
+//   var container = $("#map_canvas");
+//   var imageUrl =
+//     "http://maps.google.com/maps/api/staticmap?sensor=false&center=" +
+//     position.coords.latitude +
+//     "," +
+//     position.coords.longitude +
+//     "&zoom=18&size=640x500&markers=color:blue|label:S|" +
+//     position.coords.latitude +
+//     "," +
+//     position.coords.longitude;
+
+//   container.css({
+//     display: "block",
+//     width: 640,
+//   });
+//   $("<img/>", {
+//     src: imageUrl,
+//   }).appendTo(container);
+// }
+//end test
+
+// navigator.geolocation.getCurrentPosition(function (position) {
+//   lat = position.coords.latitude;
+//   lon = position.coords.longitude;
+// });
+
+function GetMap(position) {
   map = new Microsoft.Maps.Map("#myMap", {
     credentials: credentials,
-    /*      "AsnjENk9o2btta0rJzurVwsuleYaFxsWcc78p0Bop4TjK4M7PdNcjX1JyCXi6C45",*/
+    center: new Microsoft.Maps.Location(
+      position.coords.latitude,
+      position.coords.longitude
+    ),
     zoom: 13,
   });
 
@@ -61,18 +149,18 @@ function GetMap() {
       NearbyLocations(buttonValue);
     });
   }
-  document
-    .getElementById("pageForwardButton")
-    .addEventListener("click", pageForward);
-  document
-    .getElementById("pageBackwardButton")
-    .addEventListener("click", pageBackwards);
+  // document
+  //   .getElementById("pageForwardButton")
+  //   .addEventListener("click", pageForward);
+  // document
+  //   .getElementById("pageBackwardButton")
+  //   .addEventListener("click", pageBackwards);
 }
 
 function NearbyLocations(value) {
   map.layers.clear();
   if (typeof Microsoft.Maps.Directions !== "undefined") {
-    directionsManager.clearDisplay();
+    directionsManager.dispose();
   }
   //Create an infobox to display content for each result.
   infobox = new Microsoft.Maps.Infobox(map.getCenter(), { visible: false });
@@ -93,7 +181,7 @@ function NearbyLocations(value) {
       <a id="ibox-close" class="infobox-close" onclick="closeInfoBox()">x
       </a></div><h2>${m.DisplayName.toString()}</h2><p>${
         m.AddressLine.toString() + ", " + m.Locality.toString()
-      }</p><button id="btn-getdirections" type="button">Get Directions</button>
+      }</p><button id="btn-getdirections" type="button" onclick="GetDirections()">Get Directions</button>
       </div>
       `,
       // title: m.DisplayName,
@@ -102,13 +190,13 @@ function NearbyLocations(value) {
       visible: true,
     });
 
-    document
-      .getElementById("btn-getdirections")
-      .addEventListener("click", () => {
-        //map.layers.clear();
-        closeInfoBox();
-        GetDirections();
-      });
+    // document
+    //   .getElementById("btn-getdirections")
+    //   .addEventListener("click", () => {
+    //     //map.layers.clear();
+    //     closeInfoBox();
+    //     GetDirections();
+    //   });
   });
 
   //Load the Bing Spatial Data Services module.
@@ -150,11 +238,44 @@ function Search(res) {
   r = res.resourceSets[0].resources;
   //Remove any previous results from the map.
   map.entities.clear();
-  layer.clear();
+  map.layers.clear();
+  // if (typeof layer !== "undefined") {
+  //   layer.clear();
+  // }
   //map.layers.clear();
   if (typeof Microsoft.Maps.Directions !== "undefined") {
-    directionsManager.clearDisplay();
+    directionsManager.dispose();
   }
+
+  //start test
+  //Create an infobox to display content for each result.
+  infobox = new Microsoft.Maps.Infobox(map.getCenter(), { visible: false });
+  infobox.setMap(map);
+
+  //Create a layer for the results.
+  layer = new Microsoft.Maps.Layer();
+  map.layers.insert(layer);
+
+  //Add a click event to the layer to show an infobox when a pushpin is clicked.
+  Microsoft.Maps.Events.addHandler(layer, "click", function (e) {
+    var m = e.target;
+    dest = e.target.getLocation();
+    destName = e.target.entity.title;
+
+    infobox.setOptions({
+      htmlContent: `<div id="infoboxText" style="background: #f5f7f6; color: #000000; padding: 5px;">
+    <div class="pull-right">
+    <a id="ibox-close" class="infobox-close" onclick="closeInfoBox()">x
+    </a></div><h2>${m.entity.title}</h2><p>${m.entity.subtitle}</p><button id="btn-getdirections" type="button" onclick="GetDirectionsSearch()">Get Directions</button>
+    </div>
+    `,
+      // title: m.DisplayName,
+      // description: m.AddressLine + ", " + m.Locality,
+      location: e.target.getLocation(),
+      visible: true,
+    });
+  });
+  // end test
 
   if (r && r.length > 0) {
     var pin,
@@ -177,11 +298,14 @@ function Search(res) {
         locs.push(location);
 
         output += i + 1 + ") " + r[i].name + "<br/>";
+        // output +=
+        //   '<button id="btn-getdirections" type="button" onclick="GetDirectionsSearch()">Get Directions</button>' +
+        //   "<br/>";
       }
     }
 
     //Add the pins to the map
-    layer.push(pins);
+    layer.add(pins);
 
     //Display list of results
     document.getElementById("resultList").innerHTML = output;
@@ -206,13 +330,13 @@ function GetDirections() {
   layer.clear();
   //Load the directions module.
   Microsoft.Maps.loadModule("Microsoft.Maps.Directions", function () {
-    if (typeof directionsManager === "undefined") {
-      //myVariable is undefined
-      //Create an instance of the directions manager.
-      directionsManager = new Microsoft.Maps.Directions.DirectionsManager(map);
-    } else {
-      directionsManager.clearAll();
-    }
+    // if (typeof directionsManager === "undefined") {
+    //   //myVariable is undefined
+    //   //Create an instance of the directions manager.
+    directionsManager = new Microsoft.Maps.Directions.DirectionsManager(map);
+    // } else {
+    //   directionsManager.dispose();
+    // }
     //Specify where to display the route instructions.
     directionsManager.setRenderOptions({
       itineraryContainer: "#directionsItinerary",
@@ -242,6 +366,50 @@ function GetDirections() {
     //Calculate directions.
     directionsManager.calculateDirections();
   });
+  infobox.setOptions({ visible: false });
+}
+function GetDirectionsSearch() {
+  closeNav();
+  layer.clear();
+  //Load the directions module.
+  Microsoft.Maps.loadModule("Microsoft.Maps.Directions", function () {
+    // if (typeof directionsManager === "undefined") {
+    //   //myVariable is undefined
+    //   //Create an instance of the directions manager.
+    directionsManager = new Microsoft.Maps.Directions.DirectionsManager(map);
+    // } else {
+    //   directionsManager.dispose();
+    // }
+    //Specify where to display the route instructions.
+    directionsManager.setRenderOptions({
+      itineraryContainer: "#directionsItinerary",
+    });
+
+    //Specify where to display the input panel
+    directionsManager.showInputPanel("directionsPanel");
+    //Create waypoints to route between.
+
+    var origination = new Microsoft.Maps.Directions.Waypoint({
+      address: "Current Location",
+      location: new Microsoft.Maps.Location(lat, lon),
+    });
+    directionsManager.addWaypoint(origination);
+
+    var destination = new Microsoft.Maps.Directions.Waypoint({
+      address: destName,
+      location: new Microsoft.Maps.Location(dest.latitude, dest.longitude),
+    });
+    directionsManager.addWaypoint(destination);
+
+    //Specify the element in which the itinerary will be rendered.
+    directionsManager.setRenderOptions({
+      itineraryContainer: "#directionsItinerary",
+    });
+
+    //Calculate directions.
+    directionsManager.calculateDirections();
+  });
+  infobox.setOptions({ visible: false });
 }
 
 function getNearByLocations(value) {
@@ -286,14 +454,14 @@ function getNearByLocations(value) {
           var start = pageIdx * 10 + 1;
           var end = start + data.length - 1;
 
-          document.getElementById("pageInfo").innerText =
-            "Results: " +
-            start +
-            " - " +
-            end +
-            " of " +
-            inlineCount +
-            " results";
+          // document.getElementById("pageInfo").innerText =
+          //   "Results: " +
+          //   start +
+          //   " - " +
+          //   end +
+          //   " of " +
+          //   inlineCount +
+          //   " results";
 
           //Create a list of the results.
           var listHTML = ["<table>"],
@@ -362,20 +530,20 @@ function listItemClicked(entityId) {
   }
 }
 
-function pageBackwards() {
-  if (pageIdx > 0) {
-    pageIdx--;
-    getNearByLocations();
-  }
-}
+// function pageBackwards() {
+//   if (pageIdx > 0) {
+//     pageIdx--;
+//     getNearByLocations();
+//   }
+// }
 
-function pageForward() {
-  //Ensure that paging does not exceed the number of results.
-  if ((pageIdx + 1) * 10 < numResults) {
-    pageIdx++;
-    getNearByLocations();
-  }
-}
+// function pageForward() {
+//   //Ensure that paging does not exceed the number of results.
+//   if ((pageIdx + 1) * 10 < numResults) {
+//     pageIdx++;
+//     getNearByLocations();
+//   }
+// }
 
 function highlightListItem(e) {
   var shapeId = e.target.metadata.EntityID;
@@ -407,8 +575,12 @@ function getListItemById(shapeId) {
 }
 
 function selectedSuggestion(result) {
+  //ADD PIN BASED ON RESULT
   //Remove previously selected suggestions from the map.
   map.entities.clear();
+  if (typeof directionsManager !== "undefined") {
+    directionsManager.dispose();
+  }
 
   map.setView({ bounds: result.bestView });
 }
